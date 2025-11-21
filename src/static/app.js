@@ -25,6 +25,14 @@ document.addEventListener("DOMContentLoaded", () => {
   const closeLoginModal = document.querySelector(".close-login-modal");
   const loginMessage = document.getElementById("login-message");
 
+  // Dark mode elements
+  const darkModeToggle = document.getElementById("dark-mode-toggle");
+  const themeIcon = document.getElementById("theme-icon");
+
+  // Dark mode constants
+  const DEFAULT_THEME = "light";
+  const VALID_THEMES = ["light", "dark"];
+
   // Activity categories with corresponding colors
   const activityTypes = {
     sports: { label: "Sports", color: "#e8f5e9", textColor: "#2e7d32" },
@@ -253,6 +261,36 @@ document.addEventListener("DOMContentLoaded", () => {
     const password = document.getElementById("password").value;
     await login(username, password);
   });
+
+  // Dark mode functionality
+  function initializeDarkMode() {
+    // Check for saved theme preference or default to light mode
+    const savedTheme = localStorage.getItem("theme") || DEFAULT_THEME;
+    // Validate saved theme against allowed values
+    const theme = VALID_THEMES.includes(savedTheme) ? savedTheme : DEFAULT_THEME;
+    setTheme(theme);
+  }
+
+  function setTheme(theme) {
+    document.documentElement.setAttribute("data-theme", theme);
+    // Update icon based on theme
+    if (theme === "dark") {
+      themeIcon.textContent = "☀️";
+    } else {
+      themeIcon.textContent = "🌙";
+    }
+    // Save preference
+    localStorage.setItem("theme", theme);
+  }
+
+  function toggleDarkMode() {
+    const currentTheme = document.documentElement.getAttribute("data-theme") || DEFAULT_THEME;
+    const newTheme = currentTheme === "light" ? "dark" : "light";
+    setTheme(newTheme);
+  }
+
+  // Dark mode toggle event listener
+  darkModeToggle.addEventListener("click", toggleDarkMode);
 
   // Show loading skeletons
   function showLoadingSkeletons() {
@@ -862,6 +900,7 @@ document.addEventListener("DOMContentLoaded", () => {
   };
 
   // Initialize app
+  initializeDarkMode();
   checkAuthentication();
   initializeFilters();
   fetchActivities();
