@@ -624,19 +624,34 @@ document.addEventListener("DOMContentLoaded", () => {
 
   // Function to handle sharing
   function handleShare(button, activityName, details) {
-    const baseUrl = window.location.origin + window.location.pathname;
-    const shareText = `Check out ${activityName} at Mergington High School! ${details.description}`;
+    if (!details) {
+      console.error('Activity details not available for sharing');
+      return;
+    }
+
+    const baseUrl = window.location.href.split('?')[0].split('#')[0];
+    const description = details.description || 'Join this activity at Mergington High School!';
+    const shareText = `Check out ${activityName} at Mergington High School! ${description}`;
     const shareUrl = baseUrl;
 
     if (button.classList.contains("share-facebook")) {
       const facebookUrl = `https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(shareUrl)}&quote=${encodeURIComponent(shareText)}`;
-      window.open(facebookUrl, '_blank', 'width=600,height=400');
+      const popup = window.open(facebookUrl, '_blank', 'width=600,height=400,noopener,noreferrer');
+      if (!popup) {
+        console.warn('Popup was blocked by browser');
+      }
     } else if (button.classList.contains("share-twitter")) {
       const twitterUrl = `https://twitter.com/intent/tweet?text=${encodeURIComponent(shareText)}&url=${encodeURIComponent(shareUrl)}`;
-      window.open(twitterUrl, '_blank', 'width=600,height=400');
+      const popup = window.open(twitterUrl, '_blank', 'width=600,height=400,noopener,noreferrer');
+      if (!popup) {
+        console.warn('Popup was blocked by browser');
+      }
     } else if (button.classList.contains("share-linkedin")) {
       const linkedinUrl = `https://www.linkedin.com/sharing/share-offsite/?url=${encodeURIComponent(shareUrl)}`;
-      window.open(linkedinUrl, '_blank', 'width=600,height=400');
+      const popup = window.open(linkedinUrl, '_blank', 'width=600,height=400,noopener,noreferrer');
+      if (!popup) {
+        console.warn('Popup was blocked by browser');
+      }
     } else if (button.classList.contains("share-email")) {
       const emailSubject = encodeURIComponent(`Check out ${activityName}`);
       const emailBody = encodeURIComponent(`${shareText}\n\nLearn more at: ${shareUrl}`);
